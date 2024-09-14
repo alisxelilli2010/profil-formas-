@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Forması</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        img {
+            display: block;
+            margin-top: 10px;
+            max-width: 150px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Profil Məlumatları</h1>
+    <form id="profileForm">
+        <label for="profileImage">Profil Şəkli:</label>
+        <input type="file" id="profileImage" accept="image/*"><br><br>
+        
+        <label for="firstName">Ad:</label>
+        <input type="text" id="firstName"><br><br>
+        
+        <label for="lastName">Soyad:</label>
+        <input type="text" id="lastName"><br><br>
+        
+        <label for="phoneNumber">Telefon Nömrəsi:</label>
+        <input type="tel" id="phoneNumber"><br><br>
+        
+        <button type="button" onclick="saveProfile()">Yadda saxla</button>
+    </form>
+
+    <h2>Saxlanılmış Məlumatlar</h2>
+    <div>
+        <img id="savedImage" src="" alt="Profil Şəkli">
+        <p id="savedName"></p>
+        <p id="savedPhone"></p>
+    </div>
+
+    <script>
+        // Profil məlumatlarını sessionStorage-də saxlayan funksiya
+        function saveProfile() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const profileImage = document.getElementById('profileImage').files[0];
+
+            // Ad və soyadı sessionStorage-də saxla
+            sessionStorage.setItem('firstName', firstName);
+            sessionStorage.setItem('lastName', lastName);
+            sessionStorage.setItem('phoneNumber', phoneNumber);
+
+            // Şəkli sessionStorage-də saxla
+            if (profileImage) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    sessionStorage.setItem('profileImage', event.target.result);
+                    displaySavedData();
+                };
+                reader.readAsDataURL(profileImage);
+            } else {
+                displaySavedData();
+            }
+        }
+
+        // Saxlanılmış məlumatları göstərən funksiya
+        function displaySavedData() {
+            const savedFirstName = sessionStorage.getItem('firstName');
+            const savedLastName = sessionStorage.getItem('lastName');
+            const savedPhoneNumber = sessionStorage.getItem('phoneNumber');
+            const savedProfileImage = sessionStorage.getItem('profileImage');
+
+            if (savedFirstName || savedLastName) {
+                document.getElementById('savedName').textContent = savedFirstName + ' ' + savedLastName;
+            }
+
+            if (savedPhoneNumber) {
+                document.getElementById('savedPhone').textContent = 'Telefon: ' + savedPhoneNumber;
+            }
+
+            if (savedProfileImage) {
+                document.getElementById('savedImage').src = savedProfileImage;
+            }
+        }
+
+        // Səhifə yüklənəndə saxlanmış məlumatları göstər
+        window.onload = function() {
+            displaySavedData();
+        };
+    </script>
+
+</body>
+</html>
